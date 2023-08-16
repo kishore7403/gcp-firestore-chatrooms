@@ -1,0 +1,57 @@
+/* Auth.module.css */
+
+.pageContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-image: url('https://i.pinimg.com/originals/e8/d9/4e/e8d94e1e8b6b530ad315e9385290141b.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.authContainer {
+  border: 1px solid #ccc;
+  padding: 20px;
+  text-align: center;
+  background-color: rgba(255, 255, 255, 0.7); /* Adding a semi-transparent white background */
+}
+
+.textInput {
+  margin-bottom: 10px;
+  width: 100%;
+}
+
+.textInput + .textInput {
+  margin-top: 10px;
+}
+
+.signinContainer {
+  margin-top: 20px;
+}
+.signinButton {
+  background-color: black;
+  color: white;
+}
+
+.signinButton:hover {
+  background-color: grey;
+  color: white;
+}
+
+
+.buttonContainer {
+  margin-top: 10px;
+}
+
+.googleIcon {
+  color: black; 
+  font-size: 4rem;
+}
+
+.githubIcon {
+  margin: 10px 10px 0 10px;
+  font-size: 4rem;
+  color: black;
+}
