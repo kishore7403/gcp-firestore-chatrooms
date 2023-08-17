@@ -34,32 +34,50 @@ function Copyright(props) {
 
 const defaultTheme = createTheme();
 
-const signInWithGoogle = async () => {
+export default function Login() {
+
+const signInWithEmail = async () => {
+  try {
+    // const result=await signInWithEmailAndPassword(auth, email,password);
+    // console.log(result)
+  } catch (err) {
+    console.log(err);
+  }
+}
+const signInWithGoogle = async (e) => {
     try {
+      e.preventDefault();
       const result=await signInWithPopup(auth, googleprovider);
       console.log(result)
+      const name= result.user.displayName;
+      const email=result.user.email;
+      const profilePicture=result.user.photoURL;
+  
+      localStorage.setItem("name",name)
+      localStorage.setItem("email",email)
+      localStorage.setItem("profilePicture",profilePicture)
+  
     } catch (err) {
       console.log(err);
     }
   }
 
-const signInWithGithub = async () => {
+const signInWithGithub = async (e) => {
     try {
+      e.preventDefault();
       const result=await signInWithPopup(auth, githubprovider);
       console.log(result);
+      const name= result.user.displayName;
+      const email=result.user.email;
+      const profilePicture=result.user.photoURL;
+
+      localStorage.setItem("name",name)
+      localStorage.setItem("email",email)
+      localStorage.setItem("profilePicture",profilePicture)
     } catch (err) {
       console.log(err);
     }
   }
-export default function Login() {
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
-  };
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -95,7 +113,7 @@ export default function Login() {
             <Typography component="h1" variant="h5">
               Sign in
             </Typography>
-            <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
+            <Box component="form" noValidate sx={{ mt: 1 }}>
               <TextField
                 margin="normal"
                 required
@@ -121,6 +139,7 @@ export default function Login() {
                 fullWidth
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
+                onClick={signInWithEmail}
               >
                 Sign In
               </Button>

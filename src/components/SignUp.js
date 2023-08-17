@@ -35,48 +35,61 @@ function Copyright(props) {
 
 const defaultTheme = createTheme();
 
-const signInWithGoogle = async () => {
-  try {
-    const result=await signInWithPopup(auth, googleprovider);
-    console.log(result)
-  } catch (err) {
-    console.log(err);
-  }
-}
-
-const signInWithEmail = async () => {
-  try {
-    const result=await createUserWithEmailAndPassword(auth, );
-    console.log(result);
-  } catch (err) {
-    console.log(err);
-  }
-}
-
-const signInWithGithub = async () => {
-  try {
-    const result=await signInWithPopup(auth, githubprovider);
-    console.log(result);
-  } catch (err) {
-    console.log(err);
-  }
-}
-
 export default function SignUp() {
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [firstName,setFirstName] =useState('');
-  const [lastName,setLastName] =useState('');
+  const [userEmail, setEmail] = useState('');
+  const [userPassword, setPassword] = useState('');
+  const [userFirstName,setFirstName] =useState('');
+  const [userLastName,setLastName] =useState('');
+
   
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
-  };
+const signInWithGoogle = async (e) => {
+  try {
+    e.preventDefault();
+    const result=await signInWithPopup(auth, googleprovider);
+    console.log(result)
+
+    const name= result.user.displayName;
+    const email=result.user.email;
+    const profilePicture=result.user.photoURL;
+
+    localStorage.setItem("name",name)
+    localStorage.setItem("email",email)
+    localStorage.setItem("profilePicture",profilePicture)
+
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+const signInWithEmail = async (e) => {
+  try {
+    e.preventDefault();
+    const result=await createUserWithEmailAndPassword(auth, userEmail, userPassword);
+    console.log(result);
+  } catch (err) {
+    alert(err.message);
+    console.log(err);
+  }
+}
+
+const signInWithGithub = async (e) => {
+  try {
+    e.preventDefault();
+    const result=await signInWithPopup(auth, githubprovider);
+    console.log(result);
+    const name= result.user.displayName;
+    const email=result.user.email;
+    const profilePicture=result.user.photoURL;
+
+    localStorage.setItem("name",name)
+    localStorage.setItem("email",email)
+    localStorage.setItem("profilePicture",profilePicture)
+  } catch (err) {
+    console.log(err);
+  }
+}
+
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -96,7 +109,7 @@ export default function SignUp() {
           <Typography component="h1" variant="h5">
             Sign up
           </Typography>
-          <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+          <Box component="form" noValidate sx={{ mt: 3 }}>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TextField
