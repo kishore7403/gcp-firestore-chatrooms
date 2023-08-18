@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useNavigate } from 'react-router-dom';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -14,82 +15,133 @@ import Container from '@mui/material/Container';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import GoogleIcon from '@mui/icons-material/Google';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, signOut } from 'firebase/auth';
+import { createUserWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 import { auth, googleprovider, githubprovider } from "../config/firebase-config";
 import { useState } from 'react';
+import md5 from 'md5';
 
-function Copyright(props) {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        ChatRooms
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
+import FormControl from '@mui/material/FormControl';
 
-// TODO remove, this demo shouldn't need to reset the theme.
-
-const defaultTheme = createTheme();
-
-export default function SignUp() {
-
+function SignUp() {
+  const navigate = useNavigate();
   const [userEmail, setEmail] = useState('');
   const [userPassword, setPassword] = useState('');
-  const [userFirstName,setFirstName] =useState('');
-  const [userLastName,setLastName] =useState('');
+  const [userUserName, setFirstName] = useState('');
+  const [profilePicture, setProfilePicture] = useState('');
 
-  
-const signInWithGoogle = async (e) => {
-  try {
-    e.preventDefault();
-    const result=await signInWithPopup(auth, googleprovider);
-    console.log(result)
+  const handleProfilePictureChange = (file) => {
+    const reader = new FileReader();
 
-    const name= result.user.displayName;
-    const email=result.user.email;
-    const profilePicture=result.user.photoURL;
+    reader.onload = (event) => {
+      const base64Image = event.target.result.split(',')[1];
+      setProfilePicture(base64Image);
+    };
 
-    localStorage.setItem("name",name)
-    localStorage.setItem("email",email)
-    localStorage.setItem("profilePicture",profilePicture)
+    if (file) {
+      reader.readAsDataURL(file);
+    }
+  };
 
-  } catch (err) {
-    console.log(err);
+  const signInWithEmail = async (e) => {
+    try {
+      e.preventDefault();
+
+      const hashedPassword = md5(userPassword);
+
+      const result = await createUserWithEmailAndPassword(auth, userEmail, userPassword);
+
+      const userData = {
+        userUserName,
+        userEmail,
+        userPassword: hashedPassword,
+        userProfilePic: profilePicture,
+      };
+
+      await fetch('https://northamerica-northeast1-chatroom-cdfc5.cloudfunctions.net/storeUserInfo', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userData),
+      });
+
+      console.log(result);
+      navigate("/login");
+    } catch (err) {
+      alert(err.message);
+      console.log(err);
+    }
   }
-}
 
-const signInWithEmail = async (e) => {
-  try {
-    e.preventDefault();
-    const result=await createUserWithEmailAndPassword(auth, userEmail, userPassword);
-    console.log(result);
-  } catch (err) {
-    alert(err.message);
-    console.log(err);
+  const signInWithGoogle = async (e) => {
+    try {
+      e.preventDefault();
+      const result = await signInWithPopup(auth, googleprovider);
+      console.log(result);
+
+      const name = result.user.displayName;
+      const email = result.user.email;
+      const profilePicture = result.user.photoURL;
+
+      const userData = {
+        userEmail: email,
+        userUserName: name,
+        userProfilePic: profilePicture,
+      };
+
+      await fetch('https://northamerica-northeast1-chatroom-cdfc5.cloudfunctions.net/storeUserInfo', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userData),
+      });
+
+      localStorage.setItem("name", name);
+      localStorage.setItem("email", email);
+      localStorage.setItem("profilePicture", profilePicture);
+
+      navigate("/home");
+    } catch (err) {
+      console.log(err);
+    }
   }
-}
 
-const signInWithGithub = async (e) => {
-  try {
-    e.preventDefault();
-    const result=await signInWithPopup(auth, githubprovider);
-    console.log(result);
-    const name= result.user.displayName;
-    const email=result.user.email;
-    const profilePicture=result.user.photoURL;
+  const signInWithGithub = async (e) => {
+    try {
+      e.preventDefault();
+      const result = await signInWithPopup(auth, githubprovider);
+      console.log(result);
 
-    localStorage.setItem("name",name)
-    localStorage.setItem("email",email)
-    localStorage.setItem("profilePicture",profilePicture)
-  } catch (err) {
-    console.log(err);
+      const name = result.user.displayName;
+      const email = result.user.email;
+      const profilePicture = result.user.photoURL;
+
+      const userData = {
+        userEmail: email,
+        userUserName: name,
+        userProfilePic: profilePicture,
+      };
+
+      await fetch('https://northamerica-northeast1-chatroom-cdfc5.cloudfunctions.net/storeUserInfo', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userData),
+      });
+
+      localStorage.setItem("name", name);
+      localStorage.setItem("email", email);
+      localStorage.setItem("profilePicture", profilePicture);
+
+      navigate("/home");
+    } catch (err) {
+      console.log(err);
+    }
   }
-}
 
+  const defaultTheme = createTheme();
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -111,27 +163,16 @@ const signInWithGithub = async (e) => {
           </Typography>
           <Box component="form" noValidate sx={{ mt: 3 }}>
             <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12}>
                 <TextField
                   autoComplete="given-name"
                   name="firstName"
                   required
                   fullWidth
                   id="firstName"
-                  label="First Name"
+                  label="User-name"
                   autoFocus
                   onChange={(e) => setFirstName(e.target.value)}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  fullWidth
-                  id="lastName"
-                  label="Last Name"
-                  name="lastName"
-                  autoComplete="family-name"
-                  onChange={(e) => setLastName(e.target.value)}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -157,6 +198,17 @@ const signInWithGithub = async (e) => {
                   onChange={(e) => setPassword(e.target.value)}
                 />
               </Grid>
+              <Grid item xs={12}>
+                <FormControl fullWidth>
+                <Typography>Profile Picture</Typography>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    id="profile-picture"
+                    onChange={(e) => handleProfilePictureChange(e.target.files[0])}
+                  />
+                </FormControl>
+              </Grid>
             </Grid>
             <Button
               type="submit"
@@ -176,29 +228,33 @@ const signInWithGithub = async (e) => {
             </Grid>
             <br/>
             <Grid container spacing={2}>
-                <Grid item xs={6}>
-                  <Button
-                    fullWidth
-                    variant="outlined"
-                    size="large"  // Add this to make the button larger
-                    startIcon={<GoogleIcon />}
-                    onClick={signInWithGoogle}
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <Button
-                    fullWidth
-                    variant="outlined"
-                    size="large"  // Add this to make the button larger
-                    startIcon={<GitHubIcon  />}
-                    onClick={signInWithGithub}
-                  />
-                </Grid>
+              <Grid item xs={6}>
+                <Button
+                  fullWidth
+                  variant="outlined"
+                  size="large"
+                  startIcon={<GoogleIcon />}
+                  onClick={signInWithGoogle}
+                >
+
+                </Button>
               </Grid>
+              <Grid item xs={6}>
+                <Button
+                  fullWidth
+                  variant="outlined"
+                  size="large"
+                  startIcon={<GitHubIcon />}
+                  onClick={signInWithGithub}
+                >
+                </Button>
+              </Grid>
+            </Grid>
           </Box>
         </Box>
-        <Copyright sx={{ mt: 5 }} />
       </Container>
     </ThemeProvider>
   );
 }
+
+export default SignUp;

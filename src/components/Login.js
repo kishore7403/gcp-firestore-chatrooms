@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useNavigate } from 'react-router-dom';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -16,6 +17,8 @@ import GoogleIcon from '@mui/icons-material/Google';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, signOut } from 'firebase/auth';
 import { auth, googleprovider, githubprovider } from "../config/firebase-config";
+import { useState } from 'react';
+import md5 from 'md5';
 
 function Copyright(props) {
   return (
@@ -36,14 +39,66 @@ const defaultTheme = createTheme();
 
 export default function Login() {
 
-const signInWithEmail = async () => {
-  try {
-    // const result=await signInWithEmailAndPassword(auth, email,password);
-    // console.log(result)
-  } catch (err) {
-    console.log(err);
-  }
-}
+  const navigate = useNavigate();
+  const [userEmail, setEmail] = useState('');
+  const [userPassword, setPassword] = useState('');
+
+
+
+  const signInWithEmail = async (e) => {
+    try {
+      e.preventDefault();
+      const payload = {
+        userEmail: userEmail
+      };
+      const response = await fetch('https://northamerica-northeast1-chatroom-cdfc5.cloudfunctions.net/getUserInfo', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
+      const apiData = await response.json();
+      const name=apiData.userName;
+      const email = apiData.email;
+      const profilePicture = apiData.userProfilePic;
+      const userMaskName=apiData.userMaskName;
+      const userMaskPic=apiData.userMaskPic;
+      const apiPasswordHash = apiData.password;
+  
+      // Hash the user input password using MD5 (make sure you import the MD5 library)
+      const hashedUserPassword = md5(userPassword);
+  
+      // Compare email
+      if (userEmail === email) {
+        if (apiPasswordHash === null) {
+          console.log("User doesn't have a password set in the system.");
+          return;
+        }
+  
+        // Compare hashed password
+        if (hashedUserPassword === apiPasswordHash) {
+          await signInWithEmailAndPassword(auth, userEmail, userPassword);
+          console.log("Sign-in successful");
+          localStorage.setItem("name",name)
+          localStorage.setItem("email",email)
+          localStorage.setItem("profilePicture",profilePicture)
+          localStorage.setItem("userMaskName",userMaskName)
+          localStorage.setItem("userMaskPic",userMaskPic)
+          navigate("/home")
+          
+
+        } else {
+          console.log("Invalid password");
+        }
+      } else {
+        console.log("Invalid email");
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  
 const signInWithGoogle = async (e) => {
     try {
       e.preventDefault();
@@ -56,7 +111,7 @@ const signInWithGoogle = async (e) => {
       localStorage.setItem("name",name)
       localStorage.setItem("email",email)
       localStorage.setItem("profilePicture",profilePicture)
-  
+      navigate("/home");
     } catch (err) {
       console.log(err);
     }
@@ -74,7 +129,9 @@ const signInWithGithub = async (e) => {
       localStorage.setItem("name",name)
       localStorage.setItem("email",email)
       localStorage.setItem("profilePicture",profilePicture)
+      navigate("/home");
     } catch (err) {
+      alert(err);
       console.log(err);
     }
   }
@@ -123,6 +180,8 @@ const signInWithGithub = async (e) => {
                 name="email"
                 autoComplete="email"
                 autoFocus
+                onChange={(e) => setEmail(e.target.value)}
+                
               />
               <TextField
                 margin="normal"
@@ -133,6 +192,7 @@ const signInWithGithub = async (e) => {
                 type="password"
                 id="password"
                 autoComplete="current-password"
+                onChange={(e) => setPassword(e.target.value)}
               />
               <Button
                 type="submit"
