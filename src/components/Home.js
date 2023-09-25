@@ -28,6 +28,8 @@ function Navbar() {
     const storedProfilePicture = localStorage.getItem("profilePicture");
 
     if (storedName) setName(storedName);
+
+    // Set the profile picture directly from base64 string
     if (storedProfilePicture) setProfilePicture(storedProfilePicture);
   }, []);
 
@@ -44,7 +46,7 @@ function Navbar() {
             ChatRooms
           </Typography>
           <Typography>{name}</Typography>
-          {profilePicture && <Avatar alt="Profile" src={profilePicture} style={styles.avatar} />}
+          {profilePicture && <Avatar alt="Profile" src={`data:image/jpeg;base64,${profilePicture}`} style={styles.avatar} />}
           <Button style={styles.logoutButton} onClick={handleLogout}>
             Logout
           </Button>
