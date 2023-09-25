@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { AppBar, Toolbar, Typography, Avatar, Button } from '@material-ui/core';
 import { useNavigate } from 'react-router-dom';
+import { Chat } from './Chat';
+import './Home.css'; // Import your CSS file
 
 const styles = {
   root: {
@@ -19,7 +21,7 @@ const styles = {
   },
 };
 
-function Navbar() {
+function Home() {
   const [name, setName] = useState("");
   const [profilePicture, setProfilePicture] = useState("");
   const [room,setRoom]=useState("");
@@ -68,6 +70,7 @@ function Navbar() {
 
   return (
     <div style={styles.root}>
+      <div className='navbar'>
       <AppBar position="static">
         <Toolbar>
           <Typography variant="h6" style={styles.title}>
@@ -82,9 +85,10 @@ function Navbar() {
           </Button>
         </Toolbar>
       </AppBar>
-
+      </div>
+      <div className='chatcontent'>
       {room ?(
-        <div>chat</div>
+        <div><Chat room={room}/></div>
         ):(
         <div className='room'>
             <label>Enter room</label>
@@ -92,8 +96,9 @@ function Navbar() {
             <button onClick={()=> setRoom(roomInputRef.current.value)}>Enter Chat</button>
           </div> 
         )}
+      </div>
     </div>
   );
 }
 
-export default Navbar;
+export default Home;
