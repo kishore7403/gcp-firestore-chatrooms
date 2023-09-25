@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { AppBar, Toolbar, Typography, Avatar, Button } from '@material-ui/core';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate from react-router-dom
+import { useNavigate } from 'react-router-dom';
 
 const styles = {
   root: {
@@ -22,7 +22,10 @@ const styles = {
 function Navbar() {
   const [name, setName] = useState("");
   const [profilePicture, setProfilePicture] = useState("");
-  const navigate = useNavigate(); // Create a navigate function
+  const [room,setRoom]=useState("");
+
+  const roomInputRef=useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Fetching data from localStorage when the component mounts
@@ -31,8 +34,15 @@ function Navbar() {
 
     if (storedName) setName(storedName);
 
-    // Set the profile picture directly from base64 string
-    if (storedProfilePicture) setProfilePicture(storedProfilePicture);
+    // Check if the storedProfilePicture is a valid URL
+    if (isValidURL(storedProfilePicture)) {
+      setProfilePicture(storedProfilePicture);
+    } else {
+      // Assume it's a base64 encoded image and decode it
+      if (storedProfilePicture) {
+        setProfilePicture(`data:image/jpeg;base64,${storedProfilePicture}`);
+      }
+    }
   }, []);
 
   const handleLogout = () => {
@@ -46,6 +56,16 @@ function Navbar() {
     navigate('/login');
   };
 
+  // Function to check if a string is a valid URL
+  const isValidURL = (url) => {
+    try {
+      new URL(url);
+      return true;
+    } catch (error) {
+      return false;
+    }
+  };
+
   return (
     <div style={styles.root}>
       <AppBar position="static">
@@ -54,12 +74,24 @@ function Navbar() {
             ChatRooms
           </Typography>
           <Typography>{name}</Typography>
-          {profilePicture && <Avatar alt="Profile" src={`data:image/jpeg;base64,${profilePicture}`} style={styles.avatar} />}
+          {profilePicture && (
+            <Avatar alt="Profile" src={profilePicture} style={styles.avatar} />
+          )}
           <Button style={styles.logoutButton} onClick={handleLogout}>
             Logout
           </Button>
         </Toolbar>
       </AppBar>
+
+      {room ?(
+        <div>chat</div>
+        ):(
+        <div className='room'>
+            <label>Enter room</label>
+            <input ref={roomInputRef}/>
+            <button onClick={()=> setRoom(roomInputRef.current.value)}>Enter Chat</button>
+          </div> 
+        )}
     </div>
   );
 }
