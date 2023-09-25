@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { AppBar, Toolbar, Typography, Avatar, Button } from '@material-ui/core';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate from react-router-dom
 
 const styles = {
   root: {
@@ -21,6 +22,7 @@ const styles = {
 function Navbar() {
   const [name, setName] = useState("");
   const [profilePicture, setProfilePicture] = useState("");
+  const navigate = useNavigate(); // Create a navigate function
 
   useEffect(() => {
     // Fetching data from localStorage when the component mounts
@@ -34,8 +36,14 @@ function Navbar() {
   }, []);
 
   const handleLogout = () => {
-    // Perform logout actions here
-    // For example, clearing localStorage, redirecting, etc.
+    // Clear localStorage
+    localStorage.clear();
+
+    // Replace the current history entry with /login
+    window.history.replaceState(null, "", "/login");
+
+    // Navigate to the /login route
+    navigate('/login');
   };
 
   return (
