@@ -23,7 +23,7 @@ export const Chat = (props) => {
     });
 
     return () => unsubscribe();
-  }, [room]);
+  }, [room,messageRef]);
 
   useEffect(() => {
     // Scroll to the bottom of the message list when messages change
@@ -77,7 +77,7 @@ export const Chat = (props) => {
       onChange={(e) => setNewMessage(e.target.value)}
       value={newMessage}
     />
-    <button variant="contained" color="primary" className={styles.sendbutton}>Send</button>
+    <button variant="contained" color="primary"className={styles.sendbutton}>Send</button>
   </form>
 </div>
 

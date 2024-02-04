@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { AppBar, Toolbar, Typography, Avatar, Button } from '@material-ui/core';
+import { AppBar, Toolbar, Typography, Avatar, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { Chat } from './Chat';
 

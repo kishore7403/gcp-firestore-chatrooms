@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { AppBar, Toolbar, Typography, Avatar, Button } from '@material-ui/core';
+import React, { useState, useEffect} from 'react';
+import { AppBar, Toolbar, Typography, Avatar, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { Chat } from './Chat';
 
@@ -22,7 +22,7 @@ const styles = {
   buttonContainer: {
     display: 'flex',
     justifyContent: 'center',
-    marginTop: '20px', // Add margin or adjust as needed
+    marginTop: '20px', 
   },
   globalChatHeading: {
     marginTop: 'auto',
