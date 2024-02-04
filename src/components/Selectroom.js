@@ -3,7 +3,6 @@ import { AppBar, Toolbar, Typography, Avatar, Button } from '@material-ui/core';
 import { useNavigate } from 'react-router-dom';
 import { Chat } from './Chat';
 
-
 const styles = {
   root: {
     flexGrow: 1,
@@ -22,19 +21,21 @@ const styles = {
   buttonContainer: {
     display: 'flex',
     justifyContent: 'center',
-    marginTop: '20px', // Add margin or adjust as needed
+    marginTop: '20px', 
   },
-  globalChatHeading: {
+  privateChatHeading: {
     marginTop: 'auto',
     height: '100%',
     marginLeft: '45%'
   },
-
 };
 
-function Home() {
+function Selectroom() {
   const [name, setName] = useState("");
   const [profilePicture, setProfilePicture] = useState("");
+  const [room,setRoom]=useState("");
+
+  const roomInputRef=useRef(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -66,10 +67,12 @@ function Home() {
     navigate('/login');
   };
 
-  const navigateToSelectRoom = () => {
+  const navigateToHome = () => {
     // Use the navigate function to navigate to the '/selectroom' route
-    navigate('/selectroom');
+    navigate('/home');
   };
+
+
 
   // Function to check if a string is a valid URL
   const isValidURL = (url) => {
@@ -99,22 +102,34 @@ function Home() {
         </Toolbar>
       </AppBar>
       </div>
-
-      <div style={styles.globalChatHeading}>
-        <h1>Global Chat</h1>
+     
+      <div >
+      
+  {room ? (
+    <div>
+        <div style={styles.privateChatHeading}>
+        <h1>Room "{room}"</h1>
       </div>
-      <div>
-      <div><Chat room="1357"/></div>
-      </div>
-
+      <Chat room={room}/>
       <div style={styles.buttonContainer}>
         {/* Button to navigate to the '/selectroom' route */}
-        <Button variant="contained" color="primary" onClick={navigateToSelectRoom}>
-          Create / Enter Room
+        <Button variant="contained" color="primary" onClick={navigateToHome}>
+          Go to global chat
         </Button>
       </div>
     </div>
+  ) : (
+    <div className='room' style={{ display: 'flex', flexDirection: 'column', alignItems: 'center',justifyContent:'center',minHeight: '100vh' }}>
+      <h2 style={{margin: '16px'}}>Create / Enter room ID</h2>
+      <input  style={{margin: '16px'}} ref={roomInputRef}/>
+      <Button  style={{margin: '16px'}} variant="contained" color="primary" onClick={() => setRoom(roomInputRef.current.value)}>Enter Chat</Button>
+    </div> 
+  )}
+</div>
+
+    </div>
+    
   );
 }
 
-export default Home;
+export default Selectroom;
