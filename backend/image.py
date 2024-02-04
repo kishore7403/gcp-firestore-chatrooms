@@ -2,8 +2,7 @@
 import openai
 
 # Load your API key from an environment variable or secret management service
-openai.api_key ="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"
-
+openai.api_key =""
 response = openai.Image.create(
   prompt="animated cartoon human",
   n=1,
