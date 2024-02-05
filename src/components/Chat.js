@@ -19,18 +19,18 @@ export const Chat = (props) => {
       });
       // Sort messages by createdAt in ascending order (oldest to newest)
       newMessages.sort((a, b) => a.createdAt - b.createdAt);
+
       setNewMessages(newMessages);
+
+      if (messageListRef) {
+        messageListRef.current.scrollTop = messageListRef.current.scrollHeight;
+      }
+      
     });
 
     return () => unsubscribe();
   }, [room,messageRef]);
 
-  useEffect(() => {
-    // Scroll to the bottom of the message list when messages change
-    if (messageListRef.current) {
-      messageListRef.current.scrollTop = messageListRef.current.scrollHeight;
-    }
-  }, [messages]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -48,8 +48,10 @@ export const Chat = (props) => {
       user: user,
       room,
     });
-
+    
     setNewMessage("");
+
+   
   };
 
   return (
@@ -80,7 +82,5 @@ export const Chat = (props) => {
     <button variant="contained" color="primary"className={styles.sendbutton}>Send</button>
   </form>
 </div>
-
-
   );
 };
