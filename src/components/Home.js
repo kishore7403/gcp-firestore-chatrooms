@@ -10,25 +10,32 @@ const styles = {
   },
   title: {
     flexGrow: 1,
+    fontSize: '1.5rem',
+    fontWeight: 'bold'
   },
   avatar: {
-    marginLeft: '16px',
+    marginLeft: '1rem',
   },
   logoutButton: {
     border: '1px solid white',
     color: 'white',
     marginLeft: '1rem',
+    fontSize: '1rem'
   },
   buttonContainer: {
     display: 'flex',
     justifyContent: 'center',
-    marginTop: '20px', 
+    marginTop: '2rem', 
   },
   globalChatHeading: {
     marginTop: 'auto',
     height: '100%',
-    marginLeft: '45%'
+    marginLeft: '45%',
+    fontSize: '0.8rem'
   },
+  nameText: {
+    fontSize: '1rem', 
+  }
 
 };
 
@@ -89,7 +96,7 @@ function Home() {
           <Typography variant="h6" style={styles.title}>
             ChatRooms
           </Typography>
-          <Typography>{name}</Typography>
+          <Typography style={styles.nameText}>{name}</Typography>
           {profilePicture && (
             <Avatar alt="Profile" src={profilePicture} style={styles.avatar} />
           )}
@@ -100,9 +107,9 @@ function Home() {
       </AppBar>
       </div>
 
-      <div style={styles.globalChatHeading}>
+      <Typography style={styles.globalChatHeading}>
         <h1>Global Chat</h1>
-      </div>
+      </Typography>
       <div>
       <div><Chat room="1357"/></div>
       </div>
