@@ -9,25 +9,32 @@ const styles = {
   },
   title: {
     flexGrow: 1,
+    fontSize: '1.5rem',
+    fontWeight: 'bold'
   },
   avatar: {
-    marginLeft: '16px',
+    marginLeft: '1rem',
   },
   logoutButton: {
     border: '1px solid white',
     color: 'white',
     marginLeft: '1rem',
+    fontSize: '1rem'
   },
   buttonContainer: {
     display: 'flex',
     justifyContent: 'center',
-    marginTop: '20px', 
+    marginTop: '2rem', 
   },
   privateChatHeading: {
     marginTop: 'auto',
     height: '100%',
-    marginLeft: '45%'
+    marginLeft: '45%',
+    fontSize: '1rem'
   },
+  nameText: {
+    fontSize: '1rem', 
+  }
 };
 
 function Selectroom() {
